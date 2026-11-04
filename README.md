@@ -37,3 +37,32 @@ A modern, production-ready Planning and Kanban Board application built from scra
    ```bash
    git clone [https://github.com/Rhapthorn/kanban-board.git](https://github.com/Rhapthorn/kanban-board.git)
    cd kanban-board
+
+ Install dependencies:
+
+Bash
+npm install
+Start the local development server:
+
+Bash
+npm run dev
+Open your browser and navigate to http://localhost:5173.
+
+📂 Project Structure
+Plaintext
+src/
+├── components/
+│   └── board/
+│       ├── BoardColumn.tsx   # Droppable column container with headers & actions
+│       ├── KanbanBoard.tsx   # Master board layout, toolbar, and search/filter engine
+│       ├── TaskCard.tsx      # Draggable individual task card component
+│       └── TaskModal.tsx     # Comprehensive task creation, editing, and subtask form
+├── store/
+│   └── useBoardStore.ts      # Zustand state management and localStorage persistence
+├── types/
+│   └── board.ts              # Strict TypeScript interfaces and types
+├── App.tsx                   # Root application entry component
+├── main.tsx                  # React DOM renderer
+└── index.css                 # Global Tailwind CSS configuration imports
+💡 License
+This project is open-source and available under the MIT License.
