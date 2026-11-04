@@ -1,3 +1,4 @@
+[project_readme.md](https://github.com/user-attachments/files/34365370/project_readme.md)
 # Kanban Project Workspace
 
 A modern, production-ready Planning and Kanban Board application built from scratch using React, TypeScript, Tailwind CSS, and Zustand. Designed with a clean UI, full dark mode support, and smooth drag-and-drop mechanics.
@@ -35,21 +36,27 @@ A modern, production-ready Planning and Kanban Board application built from scra
 
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/Rhapthorn/kanban-board.git](https://github.com/Rhapthorn/kanban-board.git)
+   git clone https://github.com/Rhapthorn/kanban-board.git
    cd kanban-board
+   ```
 
- Install dependencies:
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-Bash
-npm install
-Start the local development server:
+3. Start the local development server:
+   ```bash
+   npm run dev
+   ```
 
-Bash
-npm run dev
-Open your browser and navigate to http://localhost:5173.
+4. Open your browser and navigate to `http://localhost:5173`.
 
-📂 Project Structure
-Plaintext
+---
+
+## 📂 Project Structure
+
+```text
 src/
 ├── components/
 │   └── board/
@@ -64,5 +71,10 @@ src/
 ├── App.tsx                   # Root application entry component
 ├── main.tsx                  # React DOM renderer
 └── index.css                 # Global Tailwind CSS configuration imports
-💡 License
+```
+
+---
+
+## 💡 License
+
 This project is open-source and available under the MIT License.
