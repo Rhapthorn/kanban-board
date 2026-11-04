@@ -1,75 +1,80 @@
-# React + TypeScript + Vite
+[project_readme.md](https://github.com/user-attachments/files/34365370/project_readme.md)
+# Kanban Project Workspace
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, production-ready Planning and Kanban Board application built from scratch using React, TypeScript, Tailwind CSS, and Zustand. Designed with a clean UI, full dark mode support, and smooth drag-and-drop mechanics.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Features
 
-## React Compiler
+* **Columns & Board Management**: Create, rename, reorder, and delete columns dynamically with live completion percentage tracking and task counters.
+* **Rich Task Cards**: Support for priorities (`low`, `medium`, `high`, `urgent`), tags, custom due dates, checklist subtasks, and Markdown-rendered descriptions.
+* **Drag-and-Drop Engine**: Powered by `@hello-pangea/dnd` for smooth, isolated reordering of tasks across columns or shifting entire column layouts.
+* **Real-time Search & Filtering**: Multi-select priority filtering combined with real-time title and description text search.
+* **Persistence Layer**: Auto-saves state to `localStorage` via Zustand persist middleware.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* **Framework**: React (Functional Components & Hooks) + Vite
+* **Language**: Strictly typed TypeScript
+* **Styling**: Tailwind CSS (v4)
+* **State Management**: Zustand
+* **Drag & Drop**: `@hello-pangea/dnd`
+* **Icons & Parsing**: `lucide-react`, `react-markdown`, `date-fns`
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 📦 Getting Started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Prerequisites
+* Node.js (v18+ recommended)
+* JetBrains WebStorm (or your preferred IDE)
 
+### Installation & Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Rhapthorn/kanban-board.git
+   cd kanban-board
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the local development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open your browser and navigate to `http://localhost:5173`.
+
+---
+
+## 📂 Project Structure
+
+```text
+src/
+├── components/
+│   └── board/
+│       ├── BoardColumn.tsx   # Droppable column container with headers & actions
+│       ├── KanbanBoard.tsx   # Master board layout, toolbar, and search/filter engine
+│       ├── TaskCard.tsx      # Draggable individual task card component
+│       └── TaskModal.tsx     # Comprehensive task creation, editing, and subtask form
+├── store/
+│   └── useBoardStore.ts      # Zustand state management and localStorage persistence
+├── types/
+│   └── board.ts              # Strict TypeScript interfaces and types
+├── App.tsx                   # Root application entry component
+├── main.tsx                  # React DOM renderer
+└── index.css                 # Global Tailwind CSS configuration imports
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 💡 License
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+This project is open-source and available under the MIT License.
