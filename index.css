@@ -1,0 +1,7 @@
+/* src/index.css */
+@import "tailwindcss";
+
+/*
+  Custom theme variables and overrides are now defined natively in CSS.
+  No tailwind.config.js file is required.
+*/
