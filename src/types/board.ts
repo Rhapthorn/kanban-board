@@ -36,4 +36,8 @@ export interface FilterState {
 export interface BoardStateData {
     columns: Column[];
     archivedTasks: Task[];
+    workspaceTitle?: string;
+    workspaceSubtitle?: string;
+    workspaceIcon?: string;
+    customIconUrl?: string;
 }

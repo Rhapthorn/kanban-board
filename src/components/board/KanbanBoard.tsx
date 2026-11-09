@@ -4,16 +4,25 @@ import {DragDropContext, Droppable, DropResult} from '@hello-pangea/dnd';
 import {
     AlertCircle,
     Archive,
+    Briefcase,
+    Check,
     CheckCircle2,
     Command,
     Download,
+    Edit2,
     Filter,
+    Folder,
+    Kanban,
+    Layers,
     Layout,
     Moon,
     Plus,
+    Rocket,
     Search,
     Sun,
+    Terminal,
     Upload,
+    UploadCloud,
     X,
 } from 'lucide-react';
 import {useBoardStore} from '../../store/useBoardStore';
@@ -24,6 +33,16 @@ import {TaskModal} from './TaskModal';
 import {ToastContainer} from './ToastContainer';
 import {Column, Priority, Task} from '../../types/board';
 import {isPast} from 'date-fns';
+
+const PRESET_ICONS = [
+    {id: 'Layout', label: 'Dashboard', icon: Layout},
+    {id: 'Kanban', label: 'Board', icon: Kanban},
+    {id: 'Briefcase', label: 'Work', icon: Briefcase},
+    {id: 'Layers', label: 'Project', icon: Layers},
+    {id: 'Folder', label: 'Folder', icon: Folder},
+    {id: 'Rocket', label: 'Launch', icon: Rocket},
+    {id: 'Terminal', label: 'Code', icon: Terminal},
+];
 
 export const KanbanBoard: React.FC = () => {
     const {
@@ -36,7 +55,22 @@ export const KanbanBoard: React.FC = () => {
         archivedTasks,
         exportBoardData,
         importBoardData,
+        workspaceTitle,
+        workspaceSubtitle,
+        workspaceIcon,
+        customIconUrl,
+        setWorkspaceHeader,
+        setWorkspaceIcon,
     } = useBoardStore();
+
+    const [isEditingTitle, setIsEditingTitle] = useState(false);
+    const [tempTitle, setTempTitle] = useState(workspaceTitle);
+    const [tempSubtitle, setTempSubtitle] = useState(workspaceSubtitle);
+
+    const [isIconPickerOpen, setIsIconPickerOpen] = useState(false);
+    const [imageUrlInput, setImageUrlInput] = useState('');
+    const iconPickerRef = useRef<HTMLDivElement>(null);
+    const imageFileInputRef = useRef<HTMLInputElement>(null);
 
     const [isAddingColumn, setIsAddingColumn] = useState(false);
     const [newColumnTitle, setNewColumnTitle] = useState('');
@@ -51,7 +85,7 @@ export const KanbanBoard: React.FC = () => {
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
 
     const filterRef = useRef<HTMLDivElement>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    const backupFileInputRef = useRef<HTMLInputElement>(null);
 
     const [isDark, setIsDark] = useState(() => {
         if (typeof window !== 'undefined') {
@@ -103,7 +137,7 @@ export const KanbanBoard: React.FC = () => {
                         break;
                     case 'i':
                         e.preventDefault();
-                        fileInputRef.current?.click();
+                        backupFileInputRef.current?.click();
                         break;
                     case 'c':
                         e.preventDefault();
@@ -124,10 +158,56 @@ export const KanbanBoard: React.FC = () => {
             if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
                 setIsFilterMenuOpen(false);
             }
+            if (iconPickerRef.current && !iconPickerRef.current.contains(event.target as Node)) {
+                setIsIconPickerOpen(false);
+            }
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    const saveWorkspaceTitle = () => {
+        if (tempTitle.trim()) setWorkspaceHeader(tempTitle.trim(), tempSubtitle.trim());
+        setIsEditingTitle(false);
+    };
+
+    const handleImageFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const base64Url = event.target?.result as string;
+            setWorkspaceIcon('Custom', base64Url);
+            setIsIconPickerOpen(false);
+        };
+        reader.readAsDataURL(file);
+        if (e.target) e.target.value = '';
+    };
+
+    const handleApplyUrlImage = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (imageUrlInput.trim()) {
+            setWorkspaceIcon('Custom', imageUrlInput.trim());
+            setImageUrlInput('');
+            setIsIconPickerOpen(false);
+        }
+    };
+
+    const renderCurrentIcon = () => {
+        if (customIconUrl) {
+            return (
+                <img
+                    src={customIconUrl}
+                    alt="Custom Icon"
+                    className="w-5 h-5 object-contain rounded"
+                />
+            );
+        }
+        const matched = PRESET_ICONS.find((i) => i.id === workspaceIcon);
+        const IconComponent = matched ? matched.icon : Layout;
+        return <IconComponent size={20}/>;
+    };
 
     const isDoneColumn = (col: Column) =>
         col.isDone || col.id === 'col-3' || col.title.toLowerCase().includes('done');
@@ -199,7 +279,7 @@ export const KanbanBoard: React.FC = () => {
         }
     };
 
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleBackupUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
@@ -225,18 +305,156 @@ export const KanbanBoard: React.FC = () => {
                 className="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-purple-500/10 dark:bg-purple-600/15 rounded-full blur-[140px] pointer-events-none"/>
 
             <header
-                className="relative z-10 flex items-center justify-between px-8 py-4 border-b border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md">
+                className="relative z-40 overflow-visible flex items-center justify-between px-8 py-4 border-b border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md">
                 <div className="flex items-center gap-6">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-indigo-600 text-white rounded-xl shadow-md shadow-indigo-500/20">
-                            <Layout size={20}/>
+                        {/* Top-Left Icon with Picker Menu */}
+                        <div className="relative" ref={iconPickerRef}>
+                            <button
+                                onClick={() => setIsIconPickerOpen(!isIconPickerOpen)}
+                                className="p-2 bg-indigo-600 text-white rounded-xl shadow-md shadow-indigo-500/20 hover:scale-105 active:scale-95 transition-transform flex items-center justify-center cursor-pointer"
+                                title="Change Icon"
+                            >
+                                {renderCurrentIcon()}
+                            </button>
+
+                            {/* Icon Picker Popover */}
+                            {isIconPickerOpen && (
+                                <div
+                                    className="absolute left-0 mt-2 w-64 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-4 z-50 backdrop-blur-xl space-y-3">
+                                    <div
+                                        className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                      Choose Icon
+                    </span>
+                                        <button
+                                            onClick={() => setIsIconPickerOpen(false)}
+                                            className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                                        >
+                                            <X size={14}/>
+                                        </button>
+                                    </div>
+
+                                    {/* Preset Vector Icons Grid */}
+                                    <div>
+                    <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+                      Preset Icons
+                    </span>
+                                        <div className="grid grid-cols-4 gap-2">
+                                            {PRESET_ICONS.map((item) => {
+                                                const Icon = item.icon;
+                                                const isSelected = !customIconUrl && workspaceIcon === item.id;
+                                                return (
+                                                    <button
+                                                        key={item.id}
+                                                        onClick={() => {
+                                                            setWorkspaceIcon(item.id, '');
+                                                            setIsIconPickerOpen(false);
+                                                        }}
+                                                        className={`p-2 rounded-xl flex items-center justify-center transition-all ${
+                                                            isSelected
+                                                                ? 'bg-indigo-600 text-white shadow-md'
+                                                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                                                        }`}
+                                                        title={item.label}
+                                                    >
+                                                        <Icon size={18}/>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+
+                                    {/* Custom Upload Section */}
+                                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                    <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
+                      Custom Image / Logo
+                    </span>
+
+                                        {/* File Upload Button */}
+                                        <input
+                                            type="file"
+                                            ref={imageFileInputRef}
+                                            accept="image/*"
+                                            onChange={handleImageFileUpload}
+                                            className="hidden"
+                                        />
+                                        <button
+                                            onClick={() => imageFileInputRef.current?.click()}
+                                            className="flex items-center justify-center gap-2 w-full py-2 text-xs font-medium text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl transition-colors"
+                                        >
+                                            <UploadCloud size={14}/> Upload Local Image
+                                        </button>
+
+                                        {/* Image URL Form */}
+                                        <form onSubmit={handleApplyUrlImage} className="flex gap-1.5 pt-1">
+                                            <input
+                                                type="url"
+                                                placeholder="Paste Image URL..."
+                                                value={imageUrlInput}
+                                                onChange={(e) => setImageUrlInput(e.target.value)}
+                                                className="flex-1 px-2.5 py-1 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg outline-none text-slate-800 dark:text-slate-200"
+                                            />
+                                            <button
+                                                type="submit"
+                                                className="px-3 py-1 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
+                                            >
+                                                Apply
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                        <div>
-                            <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100 leading-tight">
-                                Project Workspace
-                            </h1>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">Kanban Board Architecture</p>
-                        </div>
+
+                        {/* Header Title Section */}
+                        {isEditingTitle ? (
+                            <div className="flex items-center gap-2">
+                                <div className="flex flex-col gap-1">
+                                    <input
+                                        autoFocus
+                                        type="text"
+                                        value={tempTitle}
+                                        onChange={(e) => setTempTitle(e.target.value)}
+                                        placeholder="Workspace Title"
+                                        className="px-2 py-0.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 border border-indigo-500 rounded outline-none text-slate-900 dark:text-slate-100"
+                                    />
+                                    <input
+                                        type="text"
+                                        value={tempSubtitle}
+                                        onChange={(e) => setTempSubtitle(e.target.value)}
+                                        placeholder="Subtitle"
+                                        className="px-2 py-0.5 text-xs bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded outline-none text-slate-600 dark:text-slate-400"
+                                        onKeyDown={(e) => e.key === 'Enter' && saveWorkspaceTitle()}
+                                    />
+                                </div>
+                                <button
+                                    onClick={saveWorkspaceTitle}
+                                    className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                                >
+                                    <Check size={16}/>
+                                </button>
+                            </div>
+                        ) : (
+                            <div
+                                onClick={() => {
+                                    setTempTitle(workspaceTitle);
+                                    setTempSubtitle(workspaceSubtitle);
+                                    setIsEditingTitle(true);
+                                }}
+                                className="group flex items-center gap-2 cursor-pointer rounded-lg p-1 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
+                                title="Click to edit workspace name"
+                            >
+                                <div>
+                                    <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100 leading-tight">
+                                        {workspaceTitle}
+                                    </h1>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400">{workspaceSubtitle}</p>
+                                </div>
+                                <Edit2 size={13}
+                                       className="text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity"/>
+                            </div>
+                        )}
                     </div>
 
                     <div
@@ -310,13 +528,13 @@ export const KanbanBoard: React.FC = () => {
 
                     <input
                         type="file"
-                        ref={fileInputRef}
-                        onChange={handleFileUpload}
+                        ref={backupFileInputRef}
+                        onChange={handleBackupUpload}
                         accept=".json"
                         className="hidden"
                     />
                     <button
-                        onClick={() => fileInputRef.current?.click()}
+                        onClick={() => backupFileInputRef.current?.click()}
                         className="p-2.5 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl border border-slate-200/60 dark:border-slate-700/60 transition-colors"
                         title="Import JSON Backup (Alt+I)"
                     >

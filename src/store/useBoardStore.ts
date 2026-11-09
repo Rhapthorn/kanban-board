@@ -17,6 +17,15 @@ interface BoardStore {
     filters: FilterState;
     toasts: ToastMessage[];
 
+    workspaceTitle: string;
+    workspaceSubtitle: string;
+    workspaceIcon: string;
+    customIconUrl: string;
+
+    // Workspace Customization Actions
+    setWorkspaceHeader: (title: string, subtitle: string) => void;
+    setWorkspaceIcon: (iconName: string, customUrl?: string) => void;
+
     // Toast Actions
     addToast: (message: string, type?: ToastMessage['type'], actionLabel?: string, onAction?: () => void) => void;
     removeToast: (id: string) => void;
@@ -60,6 +69,14 @@ export const useBoardStore = create<BoardStore>()(
             archivedTasks: [],
             filters: {searchQuery: '', priorities: [], tags: []},
             toasts: [],
+
+            workspaceTitle: 'Project Workspace',
+            workspaceSubtitle: 'Kanban Board Architecture',
+            workspaceIcon: 'Layout',
+            customIconUrl: '',
+
+            setWorkspaceHeader: (title, subtitle) => set({workspaceTitle: title, workspaceSubtitle: subtitle}),
+            setWorkspaceIcon: (iconName, customUrl = '') => set({workspaceIcon: iconName, customIconUrl: customUrl}),
 
             addToast: (message, type = 'info', actionLabel, onAction) => {
                 const id = `toast-${Date.now()}`;
@@ -246,6 +263,10 @@ export const useBoardStore = create<BoardStore>()(
                 const exportObj: BoardStateData = {
                     columns: state.columns,
                     archivedTasks: state.archivedTasks,
+                    workspaceTitle: state.workspaceTitle,
+                    workspaceSubtitle: state.workspaceSubtitle,
+                    workspaceIcon: state.workspaceIcon,
+                    customIconUrl: state.customIconUrl,
                 };
                 const blob = new Blob([JSON.stringify(exportObj, null, 2)], {type: 'application/json'});
                 const url = URL.createObjectURL(blob);
@@ -264,6 +285,10 @@ export const useBoardStore = create<BoardStore>()(
                         set({
                             columns: parsed.columns,
                             archivedTasks: Array.isArray(parsed.archivedTasks) ? parsed.archivedTasks : [],
+                            workspaceTitle: parsed.workspaceTitle || 'Project Workspace',
+                            workspaceSubtitle: parsed.workspaceSubtitle || 'Kanban Board Architecture',
+                            workspaceIcon: parsed.workspaceIcon || 'Layout',
+                            customIconUrl: parsed.customIconUrl || '',
                         });
                         get().addToast('Board data imported successfully', 'success');
                         return true;
