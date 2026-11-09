@@ -1,4 +1,4 @@
-[project_readme (2).md](https://github.com/user-attachments/files/34581409/project_readme.2.md)
+[project_readme (3).md](https://github.com/user-attachments/files/34582166/project_readme.3.md)
 # ⚡ Modern SaaS Kanban Board Architecture
 
 A high-performance, keyboard-centric Kanban board built with React, TypeScript, Tailwind CSS, Zustand, and `@hello-pangea/dnd`. Designed with a dark-mode ambient UI, glassmorphism, smooth animations, and zero-latency local state persistence.
@@ -8,6 +8,7 @@ A high-performance, keyboard-centric Kanban board built with React, TypeScript, 
 ## ✨ Features
 
 - 🎨 **Ambient SaaS UI/UX**: SVG dot-grid background, smooth glassmorphism headers, dark/light theme toggling, and Framer Motion modal/drawer transitions.
+- 🖼️ **Customizable Workspace Header**: Click the top-left icon to choose from preset vector icons or upload your own custom logo/image. Inline editing for workspace titles and subtitles.
 - 🎯 **Drag & Drop Workflow**: Fluid reordering for both tasks and board columns using `@hello-pangea/dnd`.
 - ⚡ **Command Palette (`Ctrl + K` / `Cmd + K`)**: Instant search across all tasks, priority levels, and system operations with keyboard arrow navigation.
 - ⌨️ **Global Hotkeys**: Quick `Alt+Key` shortcuts operating globally across the app:
@@ -18,7 +19,7 @@ A high-performance, keyboard-centric Kanban board built with React, TypeScript, 
   - `Alt + I`: Import JSON backup
   - `Alt + C`: Clear active filters
 - 📦 **Smart Archive & Restore**: Non-destructive task archiving with column memory (`originalColumnId`), allowing tasks to restore directly back to their original stage.
-- 🎨 **Column Color Themes**: Custom color badges for custom stages, with a locked **Emerald** theme reserved for the `Done` column to ensure clear visual analytics.
+- 🎨 **Column Color Customization**: Choose custom accent colors for your active columns, with a locked **Emerald** theme reserved for the `Done` column to ensure clear visual analytics.
 - 📊 **Real-Time Analytics & Smart Completion**:
   - Top header task count, completed count, and overdue indicators.
   - 1-click completion checkmark that auto-moves cards to/from the `Done` column.
@@ -97,9 +98,9 @@ src/
 ├── components/
 │   └── board/
 │       ├── ArchiveModal.tsx      # Slide-over archive drawer component
-│       ├── BoardColumn.tsx       # Droppable Kanban column container
+│       ├── BoardColumn.tsx       # Droppable Kanban column container & color picker
 │       ├── CommandPalette.tsx    # Ctrl+K modal & quick search
-│       ├── KanbanBoard.tsx       # Master workspace layout & global listeners
+│       ├── KanbanBoard.tsx       # Master workspace layout, title & icon picker
 │       ├── TaskCard.tsx          # Draggable card item with progress bar
 │       ├── TaskModal.tsx         # Create / Edit task form modal
 │       └── ToastContainer.tsx    # Floating toast notifications & Undo system
