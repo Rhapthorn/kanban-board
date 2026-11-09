@@ -1,56 +1,92 @@
-[project_readme.md](https://github.com/user-attachments/files/34365370/project_readme.md)
-# Kanban Project Workspace
+[project_readme (2).md](https://github.com/user-attachments/files/34581409/project_readme.2.md)
+# ⚡ Modern SaaS Kanban Board Architecture
 
-A modern, production-ready Planning and Kanban Board application built from scratch using React, TypeScript, Tailwind CSS, and Zustand. Designed with a clean UI, full dark mode support, and smooth drag-and-drop mechanics.
+A high-performance, keyboard-centric Kanban board built with React, TypeScript, Tailwind CSS, Zustand, and `@hello-pangea/dnd`. Designed with a dark-mode ambient UI, glassmorphism, smooth animations, and zero-latency local state persistence.
 
 ---
 
-## 🚀 Features
+## ✨ Features
 
-* **Columns & Board Management**: Create, rename, reorder, and delete columns dynamically with live completion percentage tracking and task counters.
-* **Rich Task Cards**: Support for priorities (`low`, `medium`, `high`, `urgent`), tags, custom due dates, checklist subtasks, and Markdown-rendered descriptions.
-* **Drag-and-Drop Engine**: Powered by `@hello-pangea/dnd` for smooth, isolated reordering of tasks across columns or shifting entire column layouts.
-* **Real-time Search & Filtering**: Multi-select priority filtering combined with real-time title and description text search.
-* **Persistence Layer**: Auto-saves state to `localStorage` via Zustand persist middleware.
+- 🎨 **Ambient SaaS UI/UX**: SVG dot-grid background, smooth glassmorphism headers, dark/light theme toggling, and Framer Motion modal/drawer transitions.
+- 🎯 **Drag & Drop Workflow**: Fluid reordering for both tasks and board columns using `@hello-pangea/dnd`.
+- ⚡ **Command Palette (`Ctrl + K` / `Cmd + K`)**: Instant search across all tasks, priority levels, and system operations with keyboard arrow navigation.
+- ⌨️ **Global Hotkeys**: Quick `Alt+Key` shortcuts operating globally across the app:
+  - `Alt + N`: Create new task
+  - `Alt + T`: Toggle dark/light theme
+  - `Alt + A`: Open Archive drawer
+  - `Alt + E`: Export JSON backup
+  - `Alt + I`: Import JSON backup
+  - `Alt + C`: Clear active filters
+- 📦 **Smart Archive & Restore**: Non-destructive task archiving with column memory (`originalColumnId`), allowing tasks to restore directly back to their original stage.
+- 🎨 **Column Color Themes**: Custom color badges for custom stages, with a locked **Emerald** theme reserved for the `Done` column to ensure clear visual analytics.
+- 📊 **Real-Time Analytics & Smart Completion**:
+  - Top header task count, completed count, and overdue indicators.
+  - 1-click completion checkmark that auto-moves cards to/from the `Done` column.
+  - Relative due dates (*"Due Today"*, *"Due Tomorrow"*, *"Overdue by Xd"*).
+  - Visual subtask progress bars directly on cards.
+- 🍞 **Toast Notification System**: Interactive floating toast alerts with a 5-second `Undo` action for quick restoration of accidental archives.
+- 💾 **Data Portability & Storage**: LocalStorage persistence powered by Zustand, with full timestamped JSON export and import capabilities.
 
 ---
 
 ## 🛠️ Tech Stack
 
-* **Framework**: React (Functional Components & Hooks) + Vite
-* **Language**: Strictly typed TypeScript
-* **Styling**: Tailwind CSS (v4)
-* **State Management**: Zustand
-* **Drag & Drop**: `@hello-pangea/dnd`
-* **Icons & Parsing**: `lucide-react`, `react-markdown`, `date-fns`
+- **Framework**: React 18 / Vite
+- **Language**: TypeScript
+- **State Management**: Zustand (`persist` middleware)
+- **Styling**: Tailwind CSS (v4)
+- **Drag and Drop**: `@hello-pangea/dnd`
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+- **Date Utilities**: `date-fns`
+- **Markdown Parsing**: `react-markdown`
 
 ---
 
-## 📦 Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
-* Node.js (v18+ recommended)
-* JetBrains WebStorm (or your preferred IDE)
 
-### Installation & Setup
+- **Node.js**: `v18.0.0` or higher
+- **npm** or **pnpm** / **yarn**
 
-1. Clone the repository:
+### Installation
+
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/Rhapthorn/kanban-board.git
+   git clone https://github.com/your-username/kanban-board.git
    cd kanban-board
    ```
 
-2. Install dependencies:
+2. **Install dependencies:**
    ```bash
    npm install
    ```
 
-3. Start the local development server:
+3. **Start the development server:**
    ```bash
    npm run dev
    ```
 
-4. Open your browser and navigate to `http://localhost:5173`.
+4. **Build for production:**
+   ```bash
+   npm run build
+   ```
+
+---
+
+## ⌨️ Keyboard Shortcuts Reference
+
+| Shortcut | Action |
+| :--- | :--- |
+| `Ctrl + K` / `Cmd + K` | Toggle Command Palette / Quick Search |
+| `Alt + N` | Create New Task |
+| `Alt + T` | Toggle Light / Dark Mode |
+| `Alt + A` | Open Archive Drawer |
+| `Alt + E` | Export Board Backup (`.json`) |
+| `Alt + I` | Import Board Backup (`.json`) |
+| `Alt + C` | Clear All Active Filters |
+| `Esc` | Close Modals / Command Palette |
 
 ---
 
@@ -60,21 +96,23 @@ A modern, production-ready Planning and Kanban Board application built from scra
 src/
 ├── components/
 │   └── board/
-│       ├── BoardColumn.tsx   # Droppable column container with headers & actions
-│       ├── KanbanBoard.tsx   # Master board layout, toolbar, and search/filter engine
-│       ├── TaskCard.tsx      # Draggable individual task card component
-│       └── TaskModal.tsx     # Comprehensive task creation, editing, and subtask form
+│       ├── ArchiveModal.tsx      # Slide-over archive drawer component
+│       ├── BoardColumn.tsx       # Droppable Kanban column container
+│       ├── CommandPalette.tsx    # Ctrl+K modal & quick search
+│       ├── KanbanBoard.tsx       # Master workspace layout & global listeners
+│       ├── TaskCard.tsx          # Draggable card item with progress bar
+│       ├── TaskModal.tsx         # Create / Edit task form modal
+│       └── ToastContainer.tsx    # Floating toast notifications & Undo system
 ├── store/
-│   └── useBoardStore.ts      # Zustand state management and localStorage persistence
+│   └── useBoardStore.ts          # Zustand store with LocalStorage persistence
 ├── types/
-│   └── board.ts              # Strict TypeScript interfaces and types
-├── App.tsx                   # Root application entry component
-├── main.tsx                  # React DOM renderer
-└── index.css                 # Global Tailwind CSS configuration imports
+│   └── board.ts                  # TypeScript definitions (Task, Column, State)
+├── index.css                     # Tailwind v4 directives & custom scrollbars
+└── main.tsx                      # Application entry point
 ```
 
 ---
 
-## 💡 License
+## 📄 License
 
-This project is open-source and available under the MIT License.
+Distributed under the **MIT License**. See `LICENSE` for more information.
