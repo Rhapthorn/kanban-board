@@ -15,12 +15,16 @@ export interface Task {
     tags: string[];
     dueDate: string;
     subtasks: Subtask[];
+    archivedAt?: string;
+    originalColumnId?: string;
 }
 
 export interface Column {
     id: string;
     title: string;
     tasks: Task[];
+    isDone?: boolean;
+    color?: string;
 }
 
 export interface FilterState {
@@ -29,16 +33,7 @@ export interface FilterState {
     tags: string[];
 }
 
-export interface BoardState {
+export interface BoardStateData {
     columns: Column[];
-    filters: FilterState;
-    moveTask: (sourceColId: string, destColId: string, sourceIndex: number, destIndex: number) => void;
-    reorderColumn: (sourceIndex: number, destIndex: number) => void;
-    addTask: (colId: string, task: Task) => void;
-    updateTask: (colId: string, taskId: string, updatedTask: Partial<Task>) => void;
-    deleteTask: (colId: string, taskId: string) => void;
-    addColumn: (title: string) => void;
-    updateColumn: (colId: string, title: string) => void;
-    deleteColumn: (colId: string) => void;
-    setFilters: (filters: Partial<FilterState>) => void;
+    archivedTasks: Task[];
 }
